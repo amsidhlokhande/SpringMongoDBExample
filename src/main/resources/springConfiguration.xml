@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
+	<bean id="mongoCredential" class="com.mongodb.MongoCredential">
+		<constructor-arg name="mechanism"
+			value="#{T(com.mongodb.AuthenticationMechanism).SCRAM_SHA_1}" />
+		<constructor-arg type="java.lang.String" name="userName"
+			value="amsidh" />
+		<constructor-arg type="java.lang.String" name="source"
+			value="sandbox" />
+		<constructor-arg type="char[]" name="password" value="password" />
+		
+	</bean>
+
+	<bean id="mongoClient" class="com.mongodb.MongoClient">
+		<constructor-arg name="addr" value="localhost" />
+		<constructor-arg name="credentialsList">
+			<list>
+				<ref bean="mongoCredential" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<!-- Factory bean that creates the Mongo instance -->
+	<bean id="mongoDbFactory"
+		class="org.springframework.data.mongodb.core.SimpleMongoDbFactory">
+		<constructor-arg name="mongoClient" ref="mongoClient"></constructor-arg>
+		<constructor-arg name="databaseName" value="sandbox"></constructor-arg>
+	</bean>
+
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		 <constructor-arg ref="mongoDbFactory"/>
+	</bean>
+
+
+
+</beans>

@@ -1,0 +1,1 @@
+This is simple Spring project checks that how to interact with MongoDB database using MongoTemplate
